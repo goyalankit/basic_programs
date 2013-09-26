@@ -17,4 +17,7 @@
 *.app
 
 # Mac Files
-.DS_Store
+.DS_Stor
+
+#data
+Ruby/data/*
