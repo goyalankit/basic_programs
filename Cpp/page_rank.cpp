@@ -4,14 +4,6 @@
 
 using namespace std;
 
-class Vertex{
-  public:
-    int outDegree;
-    vector<Vertex*> inverteces;
-    int nodeNumber;
-};
-
-
 double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
   int len = page_rank_next.size();
   double tol=0.0;
@@ -27,12 +19,18 @@ double covergence_degree(vector<double> page_rank_next, vector<double> page_rank
   return tol;
 }
 
+void write_page_rank_to_file(vector<double> page_rank){
+  for(int k=0; k<page_rank.size(); k++){
+    cout << "PageRank for node " << k << " is " << page_rank[k] << endl;
+  }
+}
+
 int main(int argc, char** argv ){
   int Vcount = 23947346;
-  vector<Vertex> Graph(Vcount);
   vector<double> page_rank_previous(Vcount, 1.0/Vcount);
   vector<double> page_rank_next(Vcount,0.0);
-
+  vector<int> outDegree(23947346);
+  vector< vector<int> > inVertices(23947346);
   double tolerence = 99999.9999;
   float damping_factor = 0.85;
   double temp, constant_part;
@@ -43,38 +41,32 @@ int main(int argc, char** argv ){
 
   cout << "initializing graph" << endl;
   while(read >> source >> destination){
-    Graph[source].outDegree++;
-    Graph[source].nodeNumber = source;
-    Graph[destination].nodeNumber = destination;
-    Graph[destination].inverteces.push_back(&Graph[source]);
+    outDegree[source]++;
+    inVertices[destination].push_back(source);
   }
 
   cout << "graph initialized" << endl;
 
-  while(tolerence > .0001 or iterations == 99){
-    cout << "entered" << endl;
-    constant_part = ((1.0 - damping_factor));
-    tolerence = 99999.999;
+  tolerence = 99999.999;
+  constant_part = ((1.0 - damping_factor)/Vcount);
 
+  while(tolerence > .0001 or iterations < 99){
     for(int i=0;i<Vcount;i++){
-    cout << "entered in i " << i << endl;
       temp = 0.0;
-      for(int j=0; j<Graph[i].inverteces.size(); j++){
-        temp += (page_rank_previous[Graph[i].inverteces[j] -> nodeNumber] / Graph[i].inverteces[j] -> outDegree);
+      for(int j=0; j < inVertices[i].size(); j++){
+        temp += page_rank_previous[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
       page_rank_next[i] = constant_part + (damping_factor *  temp);
-      tolerence = covergence_degree(page_rank_next, page_rank_previous);
     }
 
     for(int k =0; k < page_rank_next.size(); k++){
       page_rank_previous[k] = page_rank_next[k];
     }
+    tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
-  }
-  
-  for(int k=0; k<Vcount; k++){
-    cout << "PageRank for node " << k << " is " << page_rank_next[k] << endl;
+    cout << "iteration number " << iterations << endl;
   }
 
+  write_page_rank_to_file(page_rank_next);
   return 0;
 }
