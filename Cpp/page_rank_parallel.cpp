@@ -78,15 +78,20 @@ int main(int argc, char** argv ){
   constant_part = ((1.0 - damping_factor)/Vcount);
 
   while(tolerence > .0001 or iterations < 99){
-#pragma omp for
-    for(int i=0;i<Vcount;i++){
+  omp_set_num_threads(4);
+  int i,j;
+#pragma omp parallel shared(inVertices, page_rank_next, page_rank_previous) private(i,j)
+    for(i=0;i<Vcount;i++){
       temp = 0.0;
-      for(int j=0; j < inVertices[i].size(); j++){
+      for(j=0; j < inVertices[i].size(); j++){
         temp += page_rank_previous[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
       page_rank_next[i] = constant_part + (damping_factor *  temp);
+      cout << omp_get_thread_num();
     }
 
+#pragma omp barrier
+#pragma omp parallel for
     for(int k =0; k < page_rank_next.size(); k++){
       page_rank_previous[k] = page_rank_next[k];
     }
