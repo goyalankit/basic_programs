@@ -37,7 +37,16 @@ int main(int argc, char** argv ){
   }
 
   char *filename = argv[1];
-  int Vcount = atoi(argv[2]);
+  int source, destination, iterations=0;
+  ifstream read(filename);
+
+  int Vcount = 0;
+  while(read >> source >> destination){
+    if(source > Vcount)
+      Vcount = source;
+    else if(destination > Vcount)
+      Vcount = destination;
+  }
 
   vector<double> page_rank(Vcount, 1.0/Vcount);
 
@@ -49,8 +58,6 @@ int main(int argc, char** argv ){
   double temp, constant_part;
 
   //reading the file and building the graph
-  int source, destination, iterations=0;
-  ifstream read(filename);
 
   cout << "initializing graph" << endl;
   while(read >> source >> destination){
