@@ -10,9 +10,10 @@ struct timeval start, end;
 
 double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
   int len = page_rank_next.size();
-  double tol=0.0;
   double temp;
+  double tol=0.0;
 
+#pragma omp parallel for private(i,tol,temp) shared(page_rank_next, page_rank_previous)
   for(int i=0;i<len;i++){
     temp = page_rank_next[i]-page_rank_previous[i];
     if(temp<0)
@@ -93,21 +94,21 @@ int main(int argc, char** argv ){
         temp += page_rank_previous[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
       page_rank_next[i] = constant_part + (damping_factor *  temp);
- //     cout << tid << " ";
     }
 
+#pragma omp parallel for private(k) shared(page_rank_next, page_rank_previous)
     for(int k =0; k < page_rank_next.size(); k++){
       page_rank_previous[k] = page_rank_next[k];
     }
-{
+
     tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
     cout << " \n iteration number " << iterations << endl;
-}
-  }
-gettimeofday(&end, NULL); //page rank ends here
 
-cout << "Time taken by parallel execution on 16 threads is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
+  }
+  gettimeofday(&end, NULL); //page rank ends here
+
+  cout << "Time taken by parallel execution on 16 threads and " << Vcount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
   write_page_rank_to_file(page_rank_next);
   return 0;
