@@ -12,7 +12,7 @@ double covergence_degree(vector<double> page_rank_next, vector<double> page_rank
   int len = page_rank_next.size();
   double tol=0.0;
 
-#pragma omp parallel for private(tol,temp) shared(page_rank_next, page_rank_previous)
+#pragma omp parallel for shared(page_rank_next, page_rank_previous) reduction(+: tol)
   for(int i=0;i<len;i++){
 	  double temp = page_rank_next[i]-page_rank_previous[i];
     if(temp<0)
@@ -95,9 +95,9 @@ int main(int argc, char** argv ){
       page_rank_next[i] = constant_part + (damping_factor *  temp);
     }
 
-#pragma omp parallel for shared(page_rank_next, page_rank_previous)
-    for(int k =0; k < page_rank_next.size(); k++){
-      page_rank_previous[k] = page_rank_next[k];
+#pragma omp parallel private(i) for shared(page_rank_next, page_rank_previous)
+    for(i =0; i < page_rank_next.size(); i++){
+      page_rank_previous[i] = page_rank_next[i];
     }
 
     tolerence = covergence_degree(page_rank_next, page_rank_previous);
