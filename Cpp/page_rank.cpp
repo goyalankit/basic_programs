@@ -37,7 +37,24 @@ int main(int argc, char** argv ){
   }
 
   char *filename = argv[1];
-  int Vcount = atoi(argv[2]);
+  int source, destination, iterations=0, Vcount = 0;
+
+  cout << "reading file and trying to find number of vertices" << endl;
+  ifstream read(filename);
+  while(read >> source >> destination){
+    if(source > Vcount)
+      Vcount = source;
+    else if(destination > Vcount)
+      Vcount = destination;
+  }
+
+  Vcount++; //because node number starts from 0
+  read.clear();
+
+  cout << Vcount << " vertices found!" << endl;
+
+  double tolerence = 99999.9999, temp, constant_part;
+  float damping_factor = 0.85;
 
   vector<double> page_rank_previous(Vcount, 1.0/Vcount);
   vector<double> page_rank_next(Vcount,0.0);
@@ -45,16 +62,11 @@ int main(int argc, char** argv ){
   vector<int> outDegree(Vcount);
   vector< vector<int> > inVertices(Vcount);
 
-  double tolerence = 99999.9999;
-  float damping_factor = 0.85;
-  double temp, constant_part;
 
   //reading the file and building the graph
-  int source, destination, iterations=0;
-  ifstream read(filename);
-
+  ifstream read_again(filename);
   cout << "initializing graph" << endl;
-  while(read >> source >> destination){
+  while(read_again >> source >> destination){
     outDegree[source]++;
     inVertices[destination].push_back(source);
   }
@@ -78,7 +90,7 @@ int main(int argc, char** argv ){
     }
     tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
-    cout << "iteration number " << iterations << endl;
+//    cout << "iteration number " << iterations << endl;
   }
 
   write_page_rank_to_file(page_rank_next);
