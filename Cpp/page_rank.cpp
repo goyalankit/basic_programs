@@ -2,8 +2,11 @@
 #include<vector>
 #include<fstream>
 #include<cstdlib>
+#include<sys/time.h>
 
 using namespace std;
+
+struct timeval start, end;
 
 double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
   int len = page_rank_next.size();
@@ -73,7 +76,7 @@ int main(int argc, char** argv ){
   }
 
   cout << "graph initialized" << endl;
-
+  gettimeofday(&start, NULL);
   tolerence = 99999.999;
   constant_part = ((1.0 - damping_factor)/Vcount);
 
@@ -91,9 +94,10 @@ int main(int argc, char** argv ){
     }
     tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
-//    cout << "iteration number " << iterations << endl;
+    cout << "iteration number " << iterations << endl;
   }
-
+  gettimeofday(&end, NULL);
+  cout << "Time taken by serial execution for " << Vcount << " nodes is " << (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
   write_page_rank_to_file(page_rank_next);
   return 0;
 }

@@ -2,8 +2,11 @@
 #include<vector>
 #include<fstream>
 #include "omp.h"
+#include<sys/time.h>
 
 using namespace std;
+
+struct timeval start, end;
 
 double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
   int len = page_rank_next.size();
@@ -21,7 +24,7 @@ double covergence_degree(vector<double> page_rank_next, vector<double> page_rank
 }
 
 void write_page_rank_to_file(vector<double> page_rank){
-  ofstream myfile("page_rank.txt");
+  ofstream myfile("page_rank_parallel.txt");
   if(myfile.is_open()){
     for(int k=0; k<page_rank.size(); k++){
       myfile << k << " " << page_rank[k] << "\n";
@@ -74,11 +77,13 @@ int main(int argc, char** argv ){
 
   cout << "graph initialized" << endl;
 
+
+  gettimeofday(&start, NULL); //start time of the actual page rank algorithm
   tolerence = 99999.999;
   constant_part = ((1.0 - damping_factor)/Vcount);
 
-  while(tolerence > .0001 or iterations < 10){
-  omp_set_num_threads(4);
+  while(tolerence > .0001 or iterations < 100){
+  omp_set_num_threads(16);
   int i,j, tid;
 #pragma omp parallel for private(i,j,tid) shared(page_rank_next, page_rank_previous, Vcount, constant_part, damping_factor, inVertices, outDegree)
     for(i=0;i<Vcount;i++){
@@ -88,7 +93,7 @@ int main(int argc, char** argv ){
         temp += page_rank_previous[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
       page_rank_next[i] = constant_part + (damping_factor *  temp);
-      cout << tid << " ";
+ //     cout << tid << " ";
     }
 
     for(int k =0; k < page_rank_next.size(); k++){
@@ -97,9 +102,12 @@ int main(int argc, char** argv ){
 {
     tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
-    cout << "iteration number " << iterations << endl;
+    cout << " \n iteration number " << iterations << endl;
 }
   }
+gettimeofday(&end, NULL); //page rank ends here
+
+cout << "Time taken by parallel execution on 16 threads is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
   write_page_rank_to_file(page_rank_next);
   return 0;
