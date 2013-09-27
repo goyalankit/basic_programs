@@ -10,12 +10,11 @@ struct timeval start, end;
 
 double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
   int len = page_rank_next.size();
-  double temp;
   double tol=0.0;
 
-#pragma omp parallel for private(i,tol,temp) shared(page_rank_next, page_rank_previous)
+#pragma omp parallel for private(tol,temp) shared(page_rank_next, page_rank_previous)
   for(int i=0;i<len;i++){
-    temp = page_rank_next[i]-page_rank_previous[i];
+	  double temp = page_rank_next[i]-page_rank_previous[i];
     if(temp<0)
       tol += (-1)*temp;
     else
@@ -96,7 +95,7 @@ int main(int argc, char** argv ){
       page_rank_next[i] = constant_part + (damping_factor *  temp);
     }
 
-#pragma omp parallel for private(k) shared(page_rank_next, page_rank_previous)
+#pragma omp parallel for shared(page_rank_next, page_rank_previous)
     for(int k =0; k < page_rank_next.size(); k++){
       page_rank_previous[k] = page_rank_next[k];
     }
