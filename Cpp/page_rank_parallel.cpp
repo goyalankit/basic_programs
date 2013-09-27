@@ -54,7 +54,7 @@ int main(int argc, char** argv ){
 
   cout << Vcount << " vertices found!" << endl;
 
-  double tolerence = 99999.9999, temp, constant_part;
+  double tolerence = 99999.9999, constant_part;
   float damping_factor = 0.85;
 
   vector<double> page_rank_previous(Vcount, 1.0/Vcount);
@@ -77,27 +77,27 @@ int main(int argc, char** argv ){
   tolerence = 99999.999;
   constant_part = ((1.0 - damping_factor)/Vcount);
 
-  while(tolerence > .0001 or iterations < 99){
+  while(tolerence > .0001 or iterations < 10){
   omp_set_num_threads(4);
   int i,j;
-#pragma omp parallel shared(inVertices, page_rank_next, page_rank_previous) private(i,j)
+#pragma omp parallel for private(i,j) shared(page_rank_next, page_rank_previous, Vcount, constant_part, damping_factor, inVertices, outDegree)
     for(i=0;i<Vcount;i++){
-      temp = 0.0;
+      double temp = 0.0;
       for(j=0; j < inVertices[i].size(); j++){
         temp += page_rank_previous[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
       page_rank_next[i] = constant_part + (damping_factor *  temp);
-      cout << omp_get_thread_num();
+//      cout << omp_get_thread_num();
     }
 
-#pragma omp barrier
-#pragma omp parallel for
     for(int k =0; k < page_rank_next.size(); k++){
       page_rank_previous[k] = page_rank_next[k];
     }
+{
     tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
     cout << "iteration number " << iterations << endl;
+}
   }
 
   write_page_rank_to_file(page_rank_next);
