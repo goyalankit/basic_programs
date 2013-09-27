@@ -20,7 +20,7 @@ double covergence_degree(vector<double> page_rank_next, vector<double> page_rank
 }
 
 void write_page_rank_to_file(vector<double> page_rank){
-  ofstream myfile("page_rank.txt");
+  ofstream myfile("page_rank2.txt");
   if(myfile.is_open()){
     for(int k=0; k<page_rank.size(); k++){
       myfile << k << " " << page_rank[k] << "\n";
@@ -39,8 +39,7 @@ int main(int argc, char** argv ){
   char *filename = argv[1];
   int Vcount = atoi(argv[2]);
 
-  vector<double> page_rank_previous(Vcount, 1.0/Vcount);
-  vector<double> page_rank_next(Vcount,0.0);
+  vector<double> page_rank(Vcount, 1.0/Vcount);
 
   vector<int> outDegree(Vcount);
   vector< vector<int> > inVertices(Vcount);
@@ -64,23 +63,19 @@ int main(int argc, char** argv ){
   tolerence = 99999.999;
   constant_part = ((1.0 - damping_factor)/Vcount);
 
-  while(tolerence > .0001 or iterations < 99){
+  while(iterations < 99){
     for(int i=0;i<Vcount;i++){
       temp = 0.0;
       for(int j=0; j < inVertices[i].size(); j++){
-        temp += page_rank_previous[inVertices[i][j]] / outDegree[inVertices[i][j]];
+        temp += page_rank[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
-      page_rank_next[i] = constant_part + (damping_factor *  temp);
+      page_rank[i] = constant_part + (damping_factor *  temp);
     }
 
-    for(int k =0; k < page_rank_next.size(); k++){
-      page_rank_previous[k] = page_rank_next[k];
-    }
-    tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
     cout << "iteration number " << iterations << endl;
   }
 
-  write_page_rank_to_file(page_rank_next);
+  write_page_rank_to_file(page_rank);
   return 0;
 }
