@@ -67,16 +67,14 @@ int main(int argc, char** argv ){
   tolerence = 0.0;
   omp_set_num_threads(atoi(argv[2]));
     int i,j,tid;
-#pragma omp parallel for private(i,j,tid) shared(page_rank, Vcount, constant_part, damping_factor, inVertices, outDegree)
+#pragma omp parallel for private(i,j,tid,temp) shared(page_rank, Vcount, constant_part, damping_factor, inVertices, outDegree) reduction(+: tolerence)
     for(i=0;i<Vcount;i++){
       temp = 0.0;
       for(j=0; j < inVertices[i].size(); j++){
-#pragma omp atomic
         temp += page_rank[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
       previous_page_rank_for_i = page_rank[i];
 
-#pragma omp atomic
       page_rank[i] = constant_part + (damping_factor *  temp);
       tolerence += abs(page_rank[i] - previous_page_rank_for_i);
     }
