@@ -2,26 +2,29 @@
 #include<vector>
 #include<fstream>
 #include "omp.h"
+#include<cmath>
 #include<sys/time.h>
 
 using namespace std;
 
 struct timeval start, end;
 
-double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
+/*
+ * could be calculated while copying next to previous
+ * double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
   int len = page_rank_next.size();
-  double tol=0.0;
+  double tol=0.0, temp=0.0;
 
-#pragma omp parallel for shared(page_rank_next, page_rank_previous) reduction(+: tol)
+//#pragma omp parallel for shared(page_rank_next, page_rank_previous) reduction(+: tol)
   for(int i=0;i<len;i++){
-	  double temp = page_rank_next[i]-page_rank_previous[i];
+	  temp = page_rank_next[i]-page_rank_previous[i];
     if(temp<0)
       tol += (-1)*temp;
     else
       tol += temp;
   }
   return tol;
-}
+}*/
 
 void write_page_rank_to_file(vector<double> page_rank){
   ofstream myfile("page_rank_parallel.txt");
@@ -57,7 +60,7 @@ int main(int argc, char** argv ){
 
   cout << Vcount << " vertices found!" << endl;
 
-  double tolerence = 99999.9999, constant_part;
+  double tolerence = 1, constant_part;
   float damping_factor = 0.85;
 
   vector<double> page_rank_previous(Vcount, 1.0/Vcount);
@@ -79,10 +82,10 @@ int main(int argc, char** argv ){
 
 
   gettimeofday(&start, NULL); //start time of the actual page rank algorithm
-  tolerence = 99999.999;
   constant_part = ((1.0 - damping_factor)/Vcount);
 
-  while(tolerence > .0001 or iterations < 100){
+  while(tolerence > .0001 and iterations < 100){
+  tolerence = 0.0;
   omp_set_num_threads(16);
   int i,j, tid;
 #pragma omp parallel for private(i,j,tid) shared(page_rank_next, page_rank_previous, Vcount, constant_part, damping_factor, inVertices, outDegree)
@@ -95,12 +98,13 @@ int main(int argc, char** argv ){
       page_rank_next[i] = constant_part + (damping_factor *  temp);
     }
 
-#pragma omp parallel private(i) for shared(page_rank_next, page_rank_previous)
-    for(i =0; i < page_rank_next.size(); i++){
+    double tol=0.0;
+#pragma omp parallel for private(i) shared(page_rank_next, page_rank_previous, Vcount) reduction(+: tolerence)
+    for(i =0; i < Vcount; i++){
+      tolerence += abs(page_rank_next[i] - page_rank_previous[i]);
       page_rank_previous[i] = page_rank_next[i];
     }
 
-    tolerence = covergence_degree(page_rank_next, page_rank_previous);
     iterations++;
     cout << " \n iteration number " << iterations << endl;
 
