@@ -1,23 +1,13 @@
 #include<iostream>
 #include<vector>
 #include<fstream>
+#include<cstdlib>
+#include<cmath>
+#include<sys/time.h>
 
 using namespace std;
 
-double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
-  int len = page_rank_next.size();
-  double tol=0.0;
-  double temp;
-
-  for(int i=0;i<len;i++){
-    temp = page_rank_next[i]-page_rank_previous[i];
-    if(temp<0)
-      tol += (-1)*temp;
-    else
-      tol += temp;
-  }
-  return tol;
-}
+struct timeval start, end;
 
 void write_page_rank_to_file(vector<double> page_rank){
   ofstream myfile("page_rank2.txt");
@@ -37,10 +27,10 @@ int main(int argc, char** argv ){
   }
 
   char *filename = argv[1];
-  int source, destination, iterations=0;
-  ifstream read(filename);
+  int source, destination, iterations=0, Vcount = 0;
 
-  int Vcount = 0;
+  cout << "reading file and trying to find number of vertices" << endl;
+  ifstream read(filename);
   while(read >> source >> destination){
     if(source > Vcount)
       Vcount = source;
@@ -48,35 +38,39 @@ int main(int argc, char** argv ){
       Vcount = destination;
   }
 
-  vector<double> page_rank(Vcount, 1.0/Vcount);
+  Vcount++; //because node number starts from 0
+  read.clear();
 
+  vector<double> page_rank(Vcount, 1.0/Vcount);
   vector<int> outDegree(Vcount);
   vector< vector<int> > inVertices(Vcount);
 
-  double tolerence = 99999.9999;
+  double tolerence = 1.0, temp, constant_part;
   float damping_factor = 0.85;
-  double temp, constant_part;
 
   //reading the file and building the graph
-
+  ifstream read_again(filename);
   cout << "initializing graph" << endl;
-  while(read >> source >> destination){
+  while(read_again >> source >> destination){
     outDegree[source]++;
     inVertices[destination].push_back(source);
   }
-
   cout << "graph initialized" << endl;
 
-  tolerence = 99999.999;
+  gettimeofday(&start, NULL);
   constant_part = ((1.0 - damping_factor)/Vcount);
 
-  while(iterations < 99){
+  double previous_page_rank_for_i=0.0;
+
+  while(tolerence > .0001 and iterations < 100){
     for(int i=0;i<Vcount;i++){
       temp = 0.0;
       for(int j=0; j < inVertices[i].size(); j++){
         temp += page_rank[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
+      previous_page_rank_for_i = page_rank[i];
       page_rank[i] = constant_part + (damping_factor *  temp);
+      tolerence += abs(page_rank[i] - previous_page_rank_for_i);
     }
 
     iterations++;

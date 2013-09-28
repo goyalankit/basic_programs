@@ -12,8 +12,9 @@ struct timeval start, end;
 void write_page_rank_to_file(vector<double> page_rank){
 	cout << "size of page rank verctor " << page_rank.size() << endl;
   ofstream myfile("page_rank_parallel.txt");
+  cout << "size of page rank vector is " << page_rank.size()<< endl;
   if(myfile.is_open()){
-    for(int k=0; k<page_rank.size(); k++){
+    for(int k=0; k< page_rank.size(); k++){
       myfile << k << " " << page_rank[k] << "\n";
     }
     myfile.close();
@@ -80,6 +81,7 @@ int main(int argc, char** argv ){
         temp += page_rank_previous[inVertices[i][j]] / outDegree[inVertices[i][j]];
       }
       page_rank_next[i] = constant_part + (damping_factor *  temp);
+//      cout << "thread number " << tid << endl;
     }
 
     double tol=0.0;
