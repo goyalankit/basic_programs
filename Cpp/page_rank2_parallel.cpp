@@ -83,6 +83,10 @@ int main(int argc, char** argv ){
     cout << "iteration number " << iterations << endl;
   }
 
+  gettimeofday(&end, NULL); //page rank ends here
+
+  cout << "Time taken by parallel on copy execution on " << argv[2] << " threads and " << Vcount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
+
   write_page_rank_to_file(page_rank);
   return 0;
 }

@@ -76,6 +76,8 @@ int main(int argc, char** argv ){
     iterations++;
     cout << "iteration number " << iterations << endl;
   }
+  gettimeofday(&end, NULL);
+  cout << "Time taken by serial execution of one copy for " << Vcount << " nodes is " << (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
   write_page_rank_to_file(page_rank);
   return 0;
