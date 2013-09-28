@@ -36,7 +36,7 @@ int main(int argc, char** argv ){
   while(read >> source >> destination){
     if(source > Vcount)
       Vcount = source;
-    else if(destination > Vcount)
+    if(destination > Vcount)
       Vcount = destination;
   }
 
