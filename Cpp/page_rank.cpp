@@ -2,26 +2,12 @@
 #include<vector>
 #include<fstream>
 #include<cstdlib>
+#include<cmath>
 #include<sys/time.h>
 
 using namespace std;
 
 struct timeval start, end;
-
-double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
-  int len = page_rank_next.size();
-  double tol=0.0;
-  double temp;
-
-  for(int i=0;i<len;i++){
-    temp = page_rank_next[i]-page_rank_previous[i];
-    if(temp<0)
-      tol += (-1)*temp;
-    else
-      tol += temp;
-  }
-  return tol;
-}
 
 void write_page_rank_to_file(vector<double> page_rank){
   ofstream myfile("page_rank.txt");
@@ -57,7 +43,7 @@ int main(int argc, char** argv ){
 
   cout << Vcount << " vertices found!" << endl;
 
-  double tolerence = 99999.9999, temp, constant_part;
+  double tolerence = 1, temp, constant_part;
   float damping_factor = 0.85;
 
   vector<double> page_rank_previous(Vcount, 1.0/Vcount);
@@ -77,10 +63,10 @@ int main(int argc, char** argv ){
 
   cout << "graph initialized" << endl;
   gettimeofday(&start, NULL);
-  tolerence = 99999.999;
   constant_part = ((1.0 - damping_factor)/Vcount);
 
-  while(tolerence > .0001 or iterations < 99){
+  while(tolerence > .0001 and iterations < 100){
+    tolerence = 0.0;
     for(int i=0;i<Vcount;i++){
       temp = 0.0;
       for(int j=0; j < inVertices[i].size(); j++){
@@ -89,10 +75,11 @@ int main(int argc, char** argv ){
       page_rank_next[i] = constant_part + (damping_factor *  temp);
     }
 
-    for(int k =0; k < page_rank_next.size(); k++){
+    for(int k =0; k < Vcount; k++){
+      tolerence += abs(page_rank_next[k] - page_rank_previous[k]);
       page_rank_previous[k] = page_rank_next[k];
     }
-    tolerence = covergence_degree(page_rank_next, page_rank_previous);
+    cout << tolerence;
     iterations++;
     cout << "iteration number " << iterations << endl;
   }

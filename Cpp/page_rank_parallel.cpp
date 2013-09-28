@@ -9,23 +9,6 @@ using namespace std;
 
 struct timeval start, end;
 
-/*
- * could be calculated while copying next to previous
- * double covergence_degree(vector<double> page_rank_next, vector<double> page_rank_previous){
-  int len = page_rank_next.size();
-  double tol=0.0, temp=0.0;
-
-//#pragma omp parallel for shared(page_rank_next, page_rank_previous) reduction(+: tol)
-  for(int i=0;i<len;i++){
-	  temp = page_rank_next[i]-page_rank_previous[i];
-    if(temp<0)
-      tol += (-1)*temp;
-    else
-      tol += temp;
-  }
-  return tol;
-}*/
-
 void write_page_rank_to_file(vector<double> page_rank){
   ofstream myfile("page_rank_parallel.txt");
   if(myfile.is_open()){
