@@ -2,6 +2,9 @@
 #include<vector>
 #include<fstream>
 #include<cmath>
+#include<cstdlib>
+#include <algorithm>
+
 
 using namespace std;
 /*

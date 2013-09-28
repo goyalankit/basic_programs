@@ -63,6 +63,7 @@ int main(int argc, char** argv ){
   double previous_page_rank_for_i=0.0;
 
   while(tolerence > .0001 and iterations < 100){
+    tolerence = 0.0;
     for(int i=0;i<Vcount;i++){
       temp = 0.0;
       for(int j=0; j < inVertices[i].size(); j++){
