@@ -10,6 +10,7 @@ using namespace std;
 struct timeval start, end;
 
 void write_page_rank_to_file(vector<double> page_rank){
+	cout << "size of page rank verctor " << page_rank.size() << endl;
   ofstream myfile("page_rank_parallel.txt");
   if(myfile.is_open()){
     for(int k=0; k<page_rank.size(); k++){
@@ -22,7 +23,7 @@ void write_page_rank_to_file(vector<double> page_rank){
 int main(int argc, char** argv ){
 
   if(argc < 3){
-    cout << "Usage: ./a.out <filename(string)> <vertex-count(int)>" << endl;
+    cout << "Usage: ./a.out <filename(string)> <thread-count(int)>" << endl;
     exit(0);
   }
 
@@ -69,7 +70,7 @@ int main(int argc, char** argv ){
 
   while(tolerence > .0001 and iterations < 100){
   tolerence = 0.0;
-  omp_set_num_threads(16);
+  omp_set_num_threads(atoi(argv[2]));
   int i,j, tid;
 #pragma omp parallel for private(i,j,tid) shared(page_rank_next, page_rank_previous, Vcount, constant_part, damping_factor, inVertices, outDegree)
     for(i=0;i<Vcount;i++){
@@ -94,8 +95,8 @@ int main(int argc, char** argv ){
   }
   gettimeofday(&end, NULL); //page rank ends here
 
-  cout << "Time taken by parallel execution on 16 threads and " << Vcount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
+  cout << "Time taken by parallel execution on " << argv[2] << " threads and " << Vcount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
-  write_page_rank_to_file(page_rank_next);
+//  write_page_rank_to_file(page_rank_next);
   return 0;
 }
