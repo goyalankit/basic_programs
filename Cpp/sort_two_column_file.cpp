@@ -7,12 +7,6 @@
 
 
 using namespace std;
-/*
-bool com(vector <pair<int, double> > fir, vector <pair<int, double> > sec){
-return (fir.second > sec.second)
-}
-
-*/
 
 struct sort_pred {
     bool operator()(const std::pair<int,double> &left, const std::pair<int,double> &right) {
