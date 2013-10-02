@@ -1,12 +1,9 @@
-Note: All the executables have been compiled using ICPC compiler.
+Note: All the executables have been created using ICPC compiler.
 
 I have included cpp files and their executables.
 
 To compile using g++:
 g++ -o pr_parallel_two_copy -openmp pr_parallel_two_copy.cpp
-
-
-The zip file contains following files:
 
 
 Type: Code for parallel two copy version
@@ -55,5 +52,3 @@ Usage: ./pr_serial_one_copy <filename>
 Kendall Tau Distance Calculation:
 To sort the page rank file for the Kendall Tau Distance: https://gist.github.com/goyalankit/6785255
 Implementation of Kendall Tau Distance Algorithm. https://gist.github.com/goyalankit/6755852
-
-Please feel free to contact me at ankitgoyal@utexas.edu
