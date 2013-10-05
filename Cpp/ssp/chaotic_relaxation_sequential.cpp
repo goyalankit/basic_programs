@@ -7,6 +7,7 @@
 #include <algorithm>
 #include<queue>
 #include<tr1/unordered_set>
+#include<tr1/unordered_map>
 
 using namespace std;
 
@@ -54,10 +55,10 @@ int main(int argc, char **argv){
   ifstream read(filename);
   read >> vCount >> nEdges;
 
-//  vector< vector<int> > buckets(2);
+  //  vector< vector<int> > buckets(2);
   vector < vector<int> > lightEdges(vCount);
   vector < vector<int> > heavyEdges(vCount);
-  vector< vector<int> > weight(vCount, vector<int>(vCount));
+  vector< tr1::unordered_map<int, int> > weight(vCount);
 
   int maxWeight = 0;
 
@@ -81,8 +82,8 @@ int main(int argc, char **argv){
 
   dist[sourceNode] = 0;
   cout << maxWeight;
-  vector < tr1::unordered_set <int> > buckets(maxWeight + 10);
-//  vector< queue<int> > buckets(vCount);
+  vector < tr1::unordered_set <int> > buckets((maxWeight + 10) / delta + 1);
+  //  vector< queue<int> > buckets(vCount);
 
   int node, destination, new_bucket_number;
   bool relaxed = false;
@@ -91,42 +92,42 @@ int main(int argc, char **argv){
   buckets[0].insert(sourceNode);
 
   vector<int> requests, deletedNodes;
+  int i=0;
   while(bucket_not_empty(buckets)){
-    for(int i=0; i<buckets.size();i++){
-      while(!buckets[i].empty()){
-        node = (*buckets[i].begin());
-        buckets[i].erase(node);
-        deletedNodes.push_back(node);
+    deletedNodes.clear();
+    while(!buckets[i].empty()){
+      node = (*buckets[i].begin());
+      buckets[i].erase(node);
+      deletedNodes.push_back(node);
 
-        for(int j=0; j<lightEdges[node].size();j++){
-          int x = dist[lightEdges[node][j]];
-          if(dist[node] + weight[node][lightEdges[node][j]] < dist[lightEdges[node][j]]){
-            dist[lightEdges[node][j]] = dist[node] + weight[node][lightEdges[node][j]];
-            int y = dist[lightEdges[node][j]];
-            buckets[x/delta].erase(lightEdges[node][j]);
-            buckets[y/delta].insert(lightEdges[node][j]);
-          }
+      cout << "running for node " << node << "with " << lightEdges[node].size() << "light edges";
+      for(int j=0; j<lightEdges[node].size();j++){
+        int x = dist[lightEdges[node][j]];
+        if(dist[node] + weight[node][lightEdges[node][j]] < dist[lightEdges[node][j]]){
+          dist[lightEdges[node][j]] = dist[node] + weight[node][lightEdges[node][j]];
+          int y = dist[lightEdges[node][j]];
+          buckets[x/delta].erase(lightEdges[node][j]);
+          buckets[y/delta].insert(lightEdges[node][j]);
         }
       }
-
-      for(int k=0;k<deletedNodes.size();k++){
-          node = deletedNodes[k];
-        for(int j=0;j<heavyEdges[node].size();j++){
-          cout << "node " << k << endl; 
-        int x = dist[heavyEdges[node][j]];
-          if(dist[node] + weight[node][heavyEdges[node][j]] < dist[heavyEdges[node][j]]){
-            dist[heavyEdges[node][j]] = dist[node] + weight[node][heavyEdges[node][j]];
-            int y = dist[heavyEdges[node][j]];
-            buckets[x/delta].erase(heavyEdges[node][j]);
-            buckets[y/delta].insert(heavyEdges[node][j]);
-          }
-        }
-      }
-      deletedNodes.clear();
     }
+
+
+    for(int k=0;k<deletedNodes.size();k++){
+      node = deletedNodes[k];
+      for(int j=0;j<heavyEdges[node].size();j++){
+        cout << "node " << k << endl; 
+        int x = dist[heavyEdges[node][j]];
+        if(dist[node] + weight[node][heavyEdges[node][j]] < dist[heavyEdges[node][j]]){
+          dist[heavyEdges[node][j]] = dist[node] + weight[node][heavyEdges[node][j]];
+          int y = dist[heavyEdges[node][j]];
+          buckets[x/delta].erase(heavyEdges[node][j]);
+          buckets[y/delta].insert(heavyEdges[node][j]);
+        }
+      }
+    }
+    i+=1;
   }
   print_shortest_path(dist);
   return 0;
 }
-
-
