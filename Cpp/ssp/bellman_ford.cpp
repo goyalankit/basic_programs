@@ -8,6 +8,8 @@
 
 using namespace std;
 
+struct timeval start, end;
+
 int vCount, nEdges, sourceNode;
 
 struct Edge
@@ -55,6 +57,7 @@ int main(int argc, char **argv){
     weight[src].push_back(wght);
   }
 
+  gettimeofday(&start, NULL); //start time of the actual page rank algorithm
   int destination;
   for(int i=0; i < vCount ; i++ )
     for(int j=0; j< vCount ; j++){
@@ -65,6 +68,10 @@ int main(int argc, char **argv){
         }
       }
     }
+
+  gettimeofday(&end, NULL); //page rank ends here
+  cout << "Time taken by parallel execution on " << argv[2] << " threads and " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
+
   print_shortest_path(dist);
   return 0;
 }
