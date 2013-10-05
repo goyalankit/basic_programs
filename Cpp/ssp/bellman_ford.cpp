@@ -59,16 +59,21 @@ int main(int argc, char **argv){
 
   gettimeofday(&start, NULL); //start time of the actual page rank algorithm
   int destination;
-  for(int i=0; i < vCount ; i++ )
+  bool relaxed = false;
+  for(int i=0; i < vCount ; i++ ){
+    relaxed = false;
     for(int j=0; j< vCount ; j++){
       for(int k=0; k < graph[j].size(); k++){
         destination = graph[j][k];
         if(dist[j] + weight[j][k] < dist[destination]){
           dist[destination] = dist[j] + weight[j][k];
+          relaxed = true;
         }
       }
     }
-
+    if(relaxed == false)
+      break;
+  }
   gettimeofday(&end, NULL); //page rank ends here
   cout << "Time taken by parallel execution on " << argv[2] << " threads and " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
