@@ -40,8 +40,8 @@ int main(int argc, char **argv){
   ifstream read(filename);
   read >> vCount >> nEdges;
 
-  vector< vector<int> > graph(vCount, vector<int>(vCount));
-  vector< vector<int> > weight(vCount, vector<int>(vCount));
+  vector< vector<int> > graph(vCount);
+  vector< vector<int> > weight(vCount);
   int degree[vCount], dist[vCount];
 
   for(int i=0;i<vCount;i++){
@@ -51,15 +51,14 @@ int main(int argc, char **argv){
   dist[sourceNode] = 0;
 
   while(read >> src >> dst >> wght){
-    graph[src][degree[src]] = dst;
-    weight[src][degree[src]] = wght;
-    degree[src]++;
+    graph[src].push_back(dst);
+    weight[src].push_back(wght);
   }
 
   int destination;
   for(int i=0; i < vCount ; i++ )
     for(int j=0; j< vCount ; j++){
-      for(int k=0; k < degree[j]; k++){
+      for(int k=0; k < graph[j].size(); k++){
         destination = graph[j][k];
         if(dist[j] + weight[j][k] < dist[destination]){
           dist[destination] = dist[j] + weight[j][k];
