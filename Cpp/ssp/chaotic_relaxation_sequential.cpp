@@ -17,19 +17,16 @@ vector < vector<int> > lightEdges;
 vector < vector<int> > heavyEdges;
 vector< tr1::unordered_map<int, int> > weight;
 
-struct Edge
-{
-  public:
-    int source;
-    int destination;
-    int weight;
-};
+
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 struct DataForThreads
 {
   int *dist;
   vector < tr1::unordered_set <int> > buckets;
   int bucket_number;
+  int thread_number;
 };
 
 
@@ -70,7 +67,7 @@ int main(int argc, char **argv){
   //  vector< vector<int> > buckets(2);
   lightEdges.resize(vCount);
   heavyEdges.resize(vCount);
-   weight.resize(vCount);
+  weight.resize(vCount);
   int maxWeight = 0;
 
   while(read >> src >> dst >> wght){
@@ -103,62 +100,71 @@ int main(int argc, char **argv){
   int i=0;
   pthread_t threads[16];
 
-    DataForThreads dft;
-    dft.dist = dist;
-    dft.buckets = buckets;
+  DataForThreads dft;
+  dft.dist = dist;
+  dft.buckets = buckets;
 
   while(bucket_not_empty(dft.buckets)){
     dft.bucket_number = i;
-   for(int j=0;j<16;j++){
-    parallel_region(&dft);
-     pthread_create(&threads[j], NULL, parallel_region, &dft);
-   }
+    for(int j=0;j<16;j++){
+      dft.thread_number = j;
+      pthread_create(&threads[j], NULL, parallel_region, &dft);
+    }
+
+    for(int j=0;j<16;j++){
+      pthread_join(threads[j], NULL);
+    }
     i+=1;
   }
+
+
+
   print_shortest_path(dist);
   return 0;
-  }
+}
 
 
 void *parallel_region(void *arg){
-  cout << "thread number" << pthread_self() << endl;
   int node; int delta = 3;
   DataForThreads *inData = (DataForThreads*) arg;
   int i = inData -> bucket_number;
   int *dist = inData -> dist;
+   cout << "thread number " << inData -> thread_number << endl;
   vector < tr1::unordered_set <int> > &buckets = inData -> buckets;
   vector<int> requests, deletedNodes;
-    deletedNodes.clear();
-    while(!buckets[i].empty()){
-      node = (*buckets[i].begin());
-      buckets[i].erase(node);
-      deletedNodes.push_back(node);
+  deletedNodes.clear();
+  while(!buckets[i].empty()){
+    pthread_mutex_lock(&lock);
+    node = (*buckets[i].begin());
+    buckets[i].erase(node);
+    deletedNodes.push_back(node);
+    pthread_mutex_unlock(&lock);
 
-      cout << "running for node " << node << "with " << lightEdges[node].size() << "light edges";
-      for(int j=0; j<lightEdges[node].size();j++){
-        int x = dist[lightEdges[node][j]];
-        if(dist[node] + weight[node][lightEdges[node][j]] < dist[lightEdges[node][j]]){
-          dist[lightEdges[node][j]] = dist[node] + weight[node][lightEdges[node][j]];
-          int y = dist[lightEdges[node][j]];
-          buckets[x/delta].erase(lightEdges[node][j]);
-          buckets[y/delta].insert(lightEdges[node][j]);
-        }
+    cout << "running for node " << node << "with " << lightEdges[node].size() << "light edges" << endl;
+    for(int j=0; j<lightEdges[node].size();j++){
+      int x = dist[lightEdges[node][j]];
+      if(dist[node] + weight[node][lightEdges[node][j]] < dist[lightEdges[node][j]]){
+        dist[lightEdges[node][j]] = dist[node] + weight[node][lightEdges[node][j]];
+        int y = dist[lightEdges[node][j]];
+        buckets[x/delta].erase(lightEdges[node][j]);
+        buckets[y/delta].insert(lightEdges[node][j]);
       }
     }
+  }
 
-    for(int k=0;k<deletedNodes.size();k++){
-      node = deletedNodes[k];
-      for(int j=0;j<heavyEdges[node].size();j++){
-        cout << "node " << k << endl; 
-        int x = dist[heavyEdges[node][j]];
-        if(dist[node] + weight[node][heavyEdges[node][j]] < dist[heavyEdges[node][j]]){
-          dist[heavyEdges[node][j]] = dist[node] + weight[node][heavyEdges[node][j]];
-          int y = dist[heavyEdges[node][j]];
-          buckets[x/delta].erase(heavyEdges[node][j]);
-          buckets[y/delta].insert(heavyEdges[node][j]);
-        }
+  for(int k=0;k<deletedNodes.size();k++){
+    node = deletedNodes[k];
+    for(int j=0;j<heavyEdges[node].size();j++){
+      cout << "node " << k << endl; 
+      int x = dist[heavyEdges[node][j]];
+      if(dist[node] + weight[node][heavyEdges[node][j]] < dist[heavyEdges[node][j]]){
+        dist[heavyEdges[node][j]] = dist[node] + weight[node][heavyEdges[node][j]];
+        int y = dist[heavyEdges[node][j]];
+        buckets[x/delta].erase(heavyEdges[node][j]);
+        buckets[y/delta].insert(heavyEdges[node][j]);
       }
     }
+  }
 }
 
 
