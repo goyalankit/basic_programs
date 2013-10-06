@@ -21,7 +21,7 @@ struct Edge
 
 };
 
-void print_shortest_path(int dist[]){
+void print_shortest_path(long int dist[]){
   for(int i=0; i< vCount ; i++){
     cout << i << " " << dist[i] << endl;
   }
@@ -44,10 +44,10 @@ int main(int argc, char **argv){
 
   vector< vector<int> > graph(vCount);
   vector< vector<int> > weight(vCount);
-  int degree[vCount], dist[vCount];
-
+  int degree[vCount];
+  long int dist[vCount];
   for(int i=0;i<vCount;i++){
-    dist[i]=99;
+    dist[i]=9999999999;
     degree[i]=0;
   }
   dist[sourceNode] = 0;
@@ -75,7 +75,7 @@ int main(int argc, char **argv){
       break;
   }
   gettimeofday(&end, NULL); //page rank ends here
-  cout << "Time taken by parallel execution on " << argv[2] << " threads and " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
+  cout << "Time taken by sequential execution bellman ford on " << argv[2] << " threads and " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
   print_shortest_path(dist);
   return 0;
