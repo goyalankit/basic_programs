@@ -8,10 +8,14 @@
 #include<queue>
 #include<tr1/unordered_set>
 #include<tr1/unordered_map>
+#include<pthread.h>
 
 using namespace std;
 
 int vCount, nEdges, sourceNode;
+vector < vector<int> > lightEdges;
+vector < vector<int> > heavyEdges;
+vector< tr1::unordered_map<int, int> > weight;
 
 struct Edge
 {
@@ -19,6 +23,13 @@ struct Edge
     int source;
     int destination;
     int weight;
+};
+
+struct DataForThreads
+{
+  int *dist;
+  vector < tr1::unordered_set <int> > buckets;
+  int bucket_number;
 };
 
 
@@ -37,6 +48,7 @@ void print_shortest_path(int dist[]){
   }
 }
 
+void *parallel_region(void *arg);
 
 int main(int argc, char **argv){
   if(argc < 4){
@@ -56,10 +68,9 @@ int main(int argc, char **argv){
   read >> vCount >> nEdges;
 
   //  vector< vector<int> > buckets(2);
-  vector < vector<int> > lightEdges(vCount);
-  vector < vector<int> > heavyEdges(vCount);
-  vector< tr1::unordered_map<int, int> > weight(vCount);
-
+  lightEdges.resize(vCount);
+  heavyEdges.resize(vCount);
+   weight.resize(vCount);
   int maxWeight = 0;
 
   while(read >> src >> dst >> wght){
@@ -74,7 +85,6 @@ int main(int argc, char **argv){
     }
   }
 
-
   int dist[vCount];
   for(int n=0;n<vCount;n++){
     dist[n]=maxWeight + 10;
@@ -82,18 +92,42 @@ int main(int argc, char **argv){
 
   dist[sourceNode] = 0;
   cout << maxWeight;
-  vector < tr1::unordered_set <int> > buckets((maxWeight + 10) / delta + 1);
+  vector < tr1::unordered_set <int> > buckets(190);
   //  vector< queue<int> > buckets(vCount);
 
   int node, destination, new_bucket_number;
-  bool relaxed = false;
-  Edge edge;
   cout << "bucket size " << buckets.size() << endl;
+
   buckets[0].insert(sourceNode);
 
-  vector<int> requests, deletedNodes;
   int i=0;
-  while(bucket_not_empty(buckets)){
+  pthread_t threads[16];
+
+    DataForThreads dft;
+    dft.dist = dist;
+    dft.buckets = buckets;
+
+  while(bucket_not_empty(dft.buckets)){
+    dft.bucket_number = i;
+   for(int j=0;j<16;j++){
+    parallel_region(&dft);
+     pthread_create(&threads[j], NULL, parallel_region, &dft);
+   }
+    i+=1;
+  }
+  print_shortest_path(dist);
+  return 0;
+  }
+
+
+void *parallel_region(void *arg){
+  cout << "thread number" << pthread_self() << endl;
+  int node; int delta = 3;
+  DataForThreads *inData = (DataForThreads*) arg;
+  int i = inData -> bucket_number;
+  int *dist = inData -> dist;
+  vector < tr1::unordered_set <int> > &buckets = inData -> buckets;
+  vector<int> requests, deletedNodes;
     deletedNodes.clear();
     while(!buckets[i].empty()){
       node = (*buckets[i].begin());
@@ -112,7 +146,6 @@ int main(int argc, char **argv){
       }
     }
 
-
     for(int k=0;k<deletedNodes.size();k++){
       node = deletedNodes[k];
       for(int j=0;j<heavyEdges[node].size();j++){
@@ -126,8 +159,7 @@ int main(int argc, char **argv){
         }
       }
     }
-    i+=1;
-  }
-  print_shortest_path(dist);
-  return 0;
 }
+
+
+
