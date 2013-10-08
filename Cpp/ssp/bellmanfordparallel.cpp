@@ -97,6 +97,7 @@ int main(int argc, char **argv){
   while(relaxed) {
     relaxed = false;
     for (int i = 0; i < schedule.size(); i++) {
+#pragma omp parallel for
       for (int k = 0; k < schedule[i].size(); k++) {
         if(dist[edges[schedule[i][k]].source] + edges[schedule[i][k]].weight < dist[edges[schedule[i][k]].destination]){
         dist[edges[schedule[i][k]].destination] = dist[edges[schedule[i][k]].source] + edges[schedule[i][k]].weight;
