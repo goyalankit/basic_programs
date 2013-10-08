@@ -2,11 +2,14 @@
 #include<fstream>
 #include<iomanip>
 #include<queue>
+#include<cstdlib>
+#include<sys/time.h>
 // limit of unsigned int
 
 using namespace std;
 
 int vCount, nEdges;
+struct timeval start, end;
 
 struct nodeDistance
 {
@@ -43,12 +46,13 @@ void dijkstra(int s, vector< vector<int> > graph, vector < vector<int> > weight)
   nodeDistance first = {s,0};
   pq.push(first);
 
+  gettimeofday(&start, NULL); //start time of the actual page rank algorithm
+
   while(!pq.empty())
   {
     nodeDistance temp = pq.top();
     pq.pop();
     int node= temp.node;
-    cout << "processing node" << node << endl;
 
     for(int i=0;i < graph[node].size();i++)
     {
@@ -57,7 +61,6 @@ void dijkstra(int s, vector< vector<int> > graph, vector < vector<int> > weight)
 
       if(!visited[graph[node][i]])
       {
-        cout << "adding node " << i << " to the queue" << endl;
         nodeDistance newNode;
         newNode.node=graph[node][i];
         newNode.distance=dist[graph[node][i]];
@@ -66,6 +69,9 @@ void dijkstra(int s, vector< vector<int> > graph, vector < vector<int> > weight)
       }
     }
   }
+
+  gettimeofday(&end, NULL); //page rank ends here
+  cout << "Time taken by sequential execution of dijkstra on " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
   cout << "The shortest distance from " << s << " to all the nodes is" << endl;
   for(int i=0;i < vCount;i++)
