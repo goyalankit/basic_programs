@@ -64,7 +64,9 @@ int main(int argc, char **argv){
 
   gettimeofday(&start, NULL); //start time of the actual page rank algorithm
 
+  omp_set_num_threads(atoi(argv[2]));
 
+  int destination;
   vector<bool> visited_edge(nEdges, false);
   int k =0;
   unsigned long int edges_visited_so_far = 0;
@@ -72,7 +74,6 @@ int main(int argc, char **argv){
     vector<bool> visited_node;
     visited_node.assign(vCount, false );
     for(int i=0;i<edges.size();i++){
-      //cout<<graph_edges[i][0]<<" "<<graph_edges[i][1]<<" "<<visited_edge[i]<<" "<<visited_node[graph_edges[i][0]]<<" "<<visited_node[graph_edges[i][1]]<<"\n";
       if(visited_edge[i]==0 && visited_node[edges[i].source]==0 && visited_node[edges[i].destination]==0) {
         schedule.resize(k+1);
         schedule[k].push_back(i);
@@ -85,19 +86,11 @@ int main(int argc, char **argv){
     k++;
   }
 
-  for (int i = 0; i < schedule.size(); i++) {
-    for (int k = 0; k < schedule[i].size(); k++) {
-      cout << schedule[i][k] << " ";
-    }
-    cout << "" << endl;
-  }
-
-  int destination;
   bool relaxed = true;
   while(relaxed) {
     relaxed = false;
     for (int i = 0; i < schedule.size(); i++) {
-#pragma omp parallel for
+#pragma omp parallel for reduction(|:relaxed)
       for (int k = 0; k < schedule[i].size(); k++) {
         if(dist[edges[schedule[i][k]].source] + edges[schedule[i][k]].weight < dist[edges[schedule[i][k]].destination]){
         dist[edges[schedule[i][k]].destination] = dist[edges[schedule[i][k]].source] + edges[schedule[i][k]].weight;

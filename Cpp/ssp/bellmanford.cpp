@@ -44,11 +44,9 @@ int main(int argc, char **argv){
 
   vector<Edge> edges;
 
-  int degree[vCount];
   long int dist[vCount];
   for(int i=0;i<vCount;i++){
     dist[i]=9999999999;
-    degree[i]=0;
   }
   dist[sourceNode] = 0;
 
@@ -63,8 +61,7 @@ int main(int argc, char **argv){
 
   gettimeofday(&start, NULL); //start time of the actual page rank algorithm
 
-  int destination;
-  bool relaxed = false;
+  bool relaxed = true;
   while(relaxed) {
     relaxed = false;
     for (int i = 0; i < edges.size(); i++) {

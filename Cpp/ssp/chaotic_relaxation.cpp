@@ -11,6 +11,8 @@
 
 using namespace std;
 
+struct timeval start, end;
+
 int vCount, nEdges, sourceNode;
 
 struct Edge
@@ -31,7 +33,7 @@ bool bucket_not_empty(vector < tr1::unordered_set <int> >  buckets){
   return false;
 }
 
-void print_shortest_path(int dist[]){
+void print_shortest_path(long int dist[]){
   for(int i=0; i< vCount ; i++){
     cout << i << " " << dist[i] << endl;
   }
@@ -71,9 +73,9 @@ int main(int argc, char **argv){
   }
 
 
-  int dist[vCount];
+  long int dist[vCount];
   for(int n=0;n<vCount;n++){
-    dist[n]=maxWeight + 10;
+    dist[n]=9999999;
   }
 
   dist[sourceNode] = 0;
@@ -87,12 +89,12 @@ int main(int argc, char **argv){
   cout << "bucket size " << bucket.size() << endl;
   bucket.insert(sourceNode);
 
+  gettimeofday(&start, NULL); //start time of the actual page rank algorithm
+
   vector<int> requests, deletedNodes;
     while(!bucket.empty()){
       node = (*bucket.begin());
       bucket.erase(node);
-      cout << "running for node " << node;
-
       for(int i = 0; i < outVertices[node].size(); i++ ){
          if(dist[node] + weight[node][outVertices[node][i]] < dist[outVertices[node][i]]){
           dist[outVertices[node][i]] = dist[node] + weight[node][outVertices[node][i]];
@@ -102,6 +104,11 @@ int main(int argc, char **argv){
       }
 
   }
+
+  gettimeofday(&end, NULL); //page rank ends here
+  cout << "Time taken by sequential execution chaotic relaxation " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
+
+
   print_shortest_path(dist);
   return 0;
 }
