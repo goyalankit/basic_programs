@@ -59,6 +59,7 @@ int main(int argc, char **argv){
     edges.push_back(e);
   }
 
+  omp_set_num_threads(atoi(argv[2]));
   gettimeofday(&start, NULL); //start time of the actual page rank algorithm
 
   bool relaxed = true;

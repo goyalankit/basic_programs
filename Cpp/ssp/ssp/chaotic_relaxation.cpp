@@ -11,9 +11,9 @@
 
 using namespace std;
 
-struct timeval start, end;
-
 int vCount, nEdges, sourceNode;
+bool writeToFile=false;
+
 
 struct Edge
 {
@@ -44,6 +44,10 @@ int main(int argc, char **argv){
   if(argc < 4){
     cout << "Usage: ./a.out <filename(string)> <source(int)> <thread-count(int)>" << endl;
     exit(0);
+  }
+
+  if(argc > 4){
+      writeToFile = true;
   }
 
   int delta = 10;
@@ -89,12 +93,12 @@ int main(int argc, char **argv){
   cout << "bucket size " << bucket.size() << endl;
   bucket.insert(sourceNode);
 
-  gettimeofday(&start, NULL); //start time of the actual page rank algorithm
-
   vector<int> requests, deletedNodes;
     while(!bucket.empty()){
       node = (*bucket.begin());
       bucket.erase(node);
+      cout << "running for node " << node;
+
       for(int i = 0; i < outVertices[node].size(); i++ ){
          if(dist[node] + weight[node][outVertices[node][i]] < dist[outVertices[node][i]]){
           dist[outVertices[node][i]] = dist[node] + weight[node][outVertices[node][i]];
@@ -105,10 +109,15 @@ int main(int argc, char **argv){
 
   }
 
-  gettimeofday(&end, NULL); //page rank ends here
-  cout << "Time taken by sequential execution chaotic relaxation " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
-
-
-  print_shortest_path(dist);
+    if(writeToFile){
+      ofstream myfile("dijkstra.txt");
+      if(myfile.is_open()){
+        for(int i=0;i < vCount;i++)
+        {
+          myfile << i << "," << dist[i] << "\n";
+        }
+        myfile.close();
+      }
+    }
   return 0;
 }

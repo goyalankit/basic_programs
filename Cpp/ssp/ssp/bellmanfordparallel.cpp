@@ -11,6 +11,8 @@ using namespace std;
 struct timeval start, end;
 
 int vCount, nEdges, sourceNode;
+bool writeToFile=false;
+
 
 struct Edge
 {
@@ -32,7 +34,9 @@ int main(int argc, char **argv){
     cout << "Usage: ./a.out <filename(string)> <source(int)>" << endl;
     exit(0);
   }
-
+  if(argc > 3){
+    writeToFile = true;
+  }
   int src, dst, wght;
   sourceNode = atoi(argv[2]);
 
@@ -64,9 +68,7 @@ int main(int argc, char **argv){
 
   gettimeofday(&start, NULL); //start time of the actual page rank algorithm
 
-  omp_set_num_threads(atoi(argv[2]));
 
-  int destination;
   vector<bool> visited_edge(nEdges, false);
   int k =0;
   unsigned long int edges_visited = 0;
@@ -86,11 +88,12 @@ int main(int argc, char **argv){
     k++;
   }
 
+  int destination;
   bool relaxed = true;
   while(relaxed) {
     relaxed = false;
     for (int i = 0; i < schedule.size(); i++) {
-#pragma omp parallel for reduction(|:relaxed)
+#pragma omp parallel for
       for (int k = 0; k < schedule[i].size(); k++) {
         if(dist[edges[schedule[i][k]].source] + edges[schedule[i][k]].weight < dist[edges[schedule[i][k]].destination]){
         dist[edges[schedule[i][k]].destination] = dist[edges[schedule[i][k]].source] + edges[schedule[i][k]].weight;
@@ -103,7 +106,17 @@ int main(int argc, char **argv){
 
   cout << "Time taken by sequential execution bellman ford on " << argv[2] << " threads and " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 
-  print_shortest_path(dist);
+  if(writeToFile){
+    ofstream myfile("bellmanfordparallel.txt");
+    if(myfile.is_open()){
+      for(int i=0;i < vCount;i++)
+      {
+        myfile << i << "," << dist[i] << "\n";
+      }
+      myfile.close();
+    }
+  }
+
   return 0;
 }
 

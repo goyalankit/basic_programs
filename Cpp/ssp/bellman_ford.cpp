@@ -62,10 +62,12 @@ int main(int argc, char **argv){
   bool relaxed = false;
   for(int i=0; i < vCount ; i++ ){
     relaxed = false;
+#pragma omp parallel for shared(dist)
     for(int j=0; j< vCount ; j++){
       for(int k=0; k < graph[j].size(); k++){
         destination = graph[j][k];
         if(dist[j] + weight[j][k] < dist[destination]){
+#pragma omp atomic
           dist[destination] = dist[j] + weight[j][k];
           relaxed = true;
         }
