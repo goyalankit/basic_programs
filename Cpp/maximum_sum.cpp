@@ -1,3 +1,11 @@
+/*
+*Author: Ankit Goyal
+*Date: 10/10/2012
+*
+* O(n) - Linear time maximum sum solution.
+*
+*/
+
 #include<iostream>
 #include<algorithm>
 
