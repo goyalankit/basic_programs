@@ -1,3 +1,22 @@
+/*
+*Author: Ankit Goyal
+*Date: 10/12/2013
+*
+*sample input:
+* 2
+* hello
+* ankitg
+*
+* output:
+* ha
+* en
+* lk
+* li
+* ot
+*  g
+*
+*/
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -16,11 +35,15 @@ int main(int argc, const char *argv[])
     }
 
     vector< vector<char> > vertical_strings(1);
+    char empty = ' ';
 
     for (int i = 0; i < horizontal_strings.size(); i++) {
         for (int k = 0; k < horizontal_strings[i].size(); k++) {
             if(vertical_strings.size() < k + 1){
                 vertical_strings.resize(k + 1);
+                for (int l = 0; l < i; l++) {
+                    vertical_strings[k].push_back(empty);
+                }
             }
             vertical_strings[k].push_back(horizontal_strings[i][k]);
         }
