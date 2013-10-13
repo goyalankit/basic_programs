@@ -22,38 +22,40 @@ class Tree
     @value = v
   end
 
-  def self.inOrder root
-    unless root.nil?
-      inOrder root.left
-      print "#{root.value} "
-      inOrder root.right
+  class << self
+    def inOrder root
+      unless root.nil?
+        inOrder root.left
+        print "#{root.value} "
+        inOrder root.right
+      end
     end
-  end
 
-  def self.preOrder root
-    unless root.nil?
-      print "#{root.value} "
-      preOrder root.left
-      preOrder root.right
+    def preOrder root
+      unless root.nil?
+        print "#{root.value} "
+        preOrder root.left
+        preOrder root.right
+      end
     end
-  end
 
-  def self.postOrder root
-    unless root.nil?
-      postOrder root.left
-      postOrder root.right
-      print "#{root.value} "
+    def postOrder root
+      unless root.nil?
+        postOrder root.left
+        postOrder root.right
+        print "#{root.value} "
+      end
     end
-  end
 
-  def self.countNodes root
-    count = 0
-    unless root.nil?
-      count += 1
-      count += countNodes root.left
-      count += countNodes root.right
+    def countNodes root
+      count = 0
+      unless root.nil?
+        count += 1
+        count += countNodes root.left
+        count += countNodes root.right
+      end
+      count
     end
-    count
   end
 end
 
