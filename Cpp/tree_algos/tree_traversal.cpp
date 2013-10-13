@@ -31,7 +31,6 @@ struct Node{
 
     public:
     Node();
-    void postOrder(Node *root);
 };
 
 Node::Node(){
@@ -42,6 +41,7 @@ Node::Node(){
 void inOrder(Node *root);
 void preOrder(Node *root);
 void postOrder(Node *root);
+int countNodes(Node *root);
 
 
 
@@ -72,9 +72,22 @@ int main(void){
     std::cout << "\nPostorder: ";
     postOrder(&root);
 
+    //node count
+    std::cout << "\nNode Count: ";
+    std::cout << countNodes(&root);
+
     return 0;
 }
 
+int countNodes(Node *root){
+    int count = 0;
+    if(root != NULL){
+        count = 1; //count the root node
+        count += countNodes(root -> left);
+        count += countNodes(root -> right);
+    }
+    return count;
+}
 
 void inOrder(Node *root){
     if(root != NULL){
