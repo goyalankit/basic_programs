@@ -23,3 +23,9 @@
 Ruby/data/*
 Cpp/road*
 /php/osr_scheduler/nbproject/private/
+
+#java
+*.class
+
+#vim files
+*.swp
