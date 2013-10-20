@@ -44,4 +44,10 @@ int main(int argc, char **argv){
         }
 
     }
+
+    for (int i = 0; i < componentId.size(); i++) {
+        std::cout << i << " " << componentId[i] << std::endl;
+    }
+
+
 }
