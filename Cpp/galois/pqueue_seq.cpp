@@ -2,8 +2,10 @@
 #include<fstream>
 #include<vector>
 #include<queue>
+#include<sys/time.h>
 
 using namespace std;
+struct timeval start, end;
 
 struct nodeComponent{
     int node;
@@ -45,6 +47,7 @@ int main(int argc, char **argv){
         outgoingVertices[destination].push_back(source);
     }
 
+    gettimeofday(&start, NULL); //start time of the actual page rank algorithm
     /*initalizing the component ids and worklist*/
     for (int i = 0; i < vCount; i++) {
         nodeComponent nd;
@@ -70,8 +73,13 @@ int main(int argc, char **argv){
         }
     }
 
+    gettimeofday(&end, NULL); //page rank ends here
+
     for (int i = 0; i < componentId.size(); i++) {
         std::cout << componentId[i] << std::endl;
     }
+
+
+  cout << "Time taken by sequential fifo queue implementation on " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
 }
 
