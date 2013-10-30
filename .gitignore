@@ -27,5 +27,16 @@ Cpp/road*
 #java
 *.class
 
+# Eclipse
+.classpath
+.project
+.settings/
+#
+# # Intellij
+.idea/
+*.iml
+*.iws
+
+
 #vim files
 *.swp
