@@ -5,7 +5,7 @@
 #include<sys/time.h>
 
 using namespace std;
-struct timeval start, end;
+struct timeval start, endf;
 
 struct nodeComponent{
     int node;
@@ -27,6 +27,17 @@ class Comparator
 
 
 int main(int argc, char **argv){
+
+    bool output = false;
+
+    if(argc < 2){
+        std::cout << "No input name given." << std::endl;
+        exit(0);
+    }
+    if(argc > 2){
+        output = true;
+    }
+
     char *filename = argv[1];
 
     int vCount, nEdges;
@@ -73,13 +84,13 @@ int main(int argc, char **argv){
         }
     }
 
-    gettimeofday(&end, NULL); //page rank ends here
-
-    for (int i = 0; i < componentId.size(); i++) {
-        std::cout << componentId[i] << std::endl;
+    gettimeofday(&endf, NULL); //page rank ends here
+    if(output){
+        for (int i = 0; i < componentId.size(); i++) {
+            std::cout << i <<  " " << componentId[i] << std::endl;
+        }
     }
 
-
-  cout << "Time taken by sequential fifo queue implementation on " << vCount << " nodes is " <<  (((end.tv_sec  - start.tv_sec) * 1000000u +  end.tv_usec - start.tv_usec) / 1.e6) << endl;
+  cout << "Time taken by sequential fifo queue implementation on " << vCount << " nodes is " <<  (((endf.tv_sec  - start.tv_sec) * 1000000u +  endf.tv_usec - start.tv_usec) / 1.e6) << endl;
 }
 
