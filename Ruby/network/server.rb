@@ -1,5 +1,4 @@
 require 'socket'                # Get sockets from stdlib
-require 'state_machine'
 
 class Node
     def self.handle_request client
@@ -9,18 +8,6 @@ class Node
             client.puts "commit"
         else
             client.puts "abort"
-        end
-    end
-
-    @@vote_count = 0
-
-    def vote_received
-
-    end
-
-    state_machine :state, initial: :awaiting_votes do
-        event :all_votes_received do
-            transition :awaiting_votes => :make_a_decision
         end
     end
 
