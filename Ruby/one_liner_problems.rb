@@ -47,7 +47,7 @@ y.call("-0.02") #true
 #For example, [2,2,3,3,4,4,4,5,5] = 4, [2,2,2,3,3,3,3,4,4,4] = 3
 #
 #CAUTION! Extremely bad code ahead. Wrote just for the sake of it.
-
+a = [2,2,3,3,4,4,4,5,5]
 a.inject({}){|hsh,i| hsh[i] = (hsh[i] || 0) + 1;hsh}.group_by{|k,v| v}.map{|k,v| [v,k]}.min{|a,b| a[0].count <=> b[0].count}[0][0][0]
 
 
