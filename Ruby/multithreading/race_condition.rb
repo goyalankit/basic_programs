@@ -17,6 +17,11 @@ c = Counter.new
 #in this case there are two statements and it may happen that one of the statements ran and then the context switch happened.
 #this could cause race condition. 
 #Check synchronization.rb to see how to fix this issue
+#
+#For example these two statements won't cause a race condition
+#t1 = Thread.start { 1000000.times { c.increment } }
+#t2 = Thread.start { 1000000.times { c.increment } }
+#
 t1 = Thread.start { 1000000.times { c.increment; c.tmp += 1 if c.count.even?; } }
 t2 = Thread.start { 1000000.times { c.increment; c.tmp += 1 if c.count.even?; } }
 
