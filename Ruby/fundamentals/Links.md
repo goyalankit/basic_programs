@@ -13,3 +13,8 @@ http://stackoverflow.com/questions/16457370/is-ruby-pass-by-value-or-pass-by-ref
 
 Monkey patching
 http://stackoverflow.com/questions/4470108/when-monkey-patching-a-method-can-you-call-the-overridden-method-from-the-new-i/4471202#4471202
+
+Talks
+-----
+Concurrency Is Not Parallelism
+http://vimeo.com/49718712
