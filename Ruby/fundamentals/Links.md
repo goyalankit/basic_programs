@@ -14,6 +14,12 @@ http://stackoverflow.com/questions/16457370/is-ruby-pass-by-value-or-pass-by-ref
 Monkey patching
 http://stackoverflow.com/questions/4470108/when-monkey-patching-a-method-can-you-call-the-overridden-method-from-the-new-i/4471202#4471202
 
+Rack Middleware
+http://railscasts.com/episodes/151-rack-middleware
+
+Rack Contrib gem
+https://github.com/rack/rack-contrib/blob/master/lib/rack/contrib/response_headers.rb
+
 Talks
 -----
 Concurrency Is Not Parallelism
