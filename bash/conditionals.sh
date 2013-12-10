@@ -42,3 +42,7 @@ echo "other conditional options!"
 echo "--------------------------"
 
 if [ -z "$MY_ENV" ]; then echo "empty or unset"; fi
+
+if [ "$MY_ENV" == "" ]; then echo "empty or unset"; fi
+
+if [ -z "${MY_ENV+xxx}" ]; then echo "just unset and not empty"; fi
