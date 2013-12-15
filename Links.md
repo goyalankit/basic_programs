@@ -16,3 +16,6 @@ http://bitmason.blogspot.ca/2013/09/what-are-containers-anyway.html
 **Tutorial**
 
 http://www.linux.org/threads/linux-containers-part-3-tools-of-the-trade.4402/
+
+**Init in unix**
+http://www.linux.org/threads/init-and-its-alternatives.4876/
