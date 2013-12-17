@@ -40,4 +40,4 @@ Run the awk program
 * built-in variable `NR` keeps track of number of rows that the awk has read. => `{print NR, $0}` prints the line number followed by the line.
 * You can put the text between the fields. `{print "total pay for", $1, "is", $2 * $3}`
 
-Next set of notes include fancier output for awk.
+    **[Next Fancier output](awk2.md) --->**
