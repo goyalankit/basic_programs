@@ -34,4 +34,6 @@ Selection
     Logical operators: `&&`, `||` and `!` are also available. Example: `$2 >= 4 || $3 >= 20`
 
 
-**<----[Previous Fundamentals](awk1.md)**  **[Next Data validation](awk3.md) ---->** 
+**<---- [Previous Fundamentals](awk1.md)**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+**[Next Data validation](awk3.md) ---->** 
