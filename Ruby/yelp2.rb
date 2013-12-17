@@ -1,53 +1,53 @@
 class Place
-  attr_accessor :tips, :name
-  
-  def initialize name 
-    @name = name
-    @tip = []
-  end
-  
-  def add_document tip
-    @tip = tip.strip
-  end 
+    attr_accessor :tips, :name
+
+    def initialize name 
+        @name = name
+        @tip = []
+    end
+
+    def add_document tip
+        @tip = tip.strip
+    end 
 end
 
 class MiniSearchEngine
-  attr_accessor :name_tip, :tip_index
-  
-  def initialize
-    @name_tip = {}
-    @tip_index = {}
-  end
-  
-  def add_document name, tip
-    @name_tip[name] = tip    
-    tip.split.map{|i| @tip_index[i].nil? ? @tip_index[i] = [name] : @tip_index[i] << name }
-  end
-  
-  def search input
-    result = []
-    input_tokens = input.split
-    input_tokens.each do |token|
-      result << @name_tip.select{|k,v| v.match(/#{token}/)}.map{|i| i[0]}
+    attr_accessor :name_tip, :tip_index
+
+    def initialize
+        @name_tip = {}
+        @tip_index = {}
     end
-    result
-  end
-  
-  def fast_search input
-    result = []
-    input_tokens = input.split
-    input_tokens.each do |token|
-      result << @tip_index[token]
+
+    def add_document name, tip
+        @name_tip[name] = tip    
+        tip.split.map{|i| @tip_index[i].nil? ? @tip_index[i] = [name] : @tip_index[i] << name }
     end
-    result.compact
-  end
-  
-  # datastore
-  
-  #p.add_document("big tasty sandwiches")
-  
-  
-  #places = []
+
+    def search input
+        result = []
+        input_tokens = input.split
+        input_tokens.each do |token|
+            result << @name_tip.select{|k,v| v.match(/#{token}/)}.map{|i| i[0]}
+        end
+        result
+    end
+
+    def fast_search input
+        result = []
+        input_tokens = input.split
+        input_tokens.each do |token|
+            result << @tip_index[token]
+        end
+        result.compact
+    end
+
+    # datastore
+
+    #p.add_document("big tasty sandwiches")
+
+
+    #places = []
 end
 
 # Example
