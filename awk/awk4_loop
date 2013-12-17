@@ -1,0 +1,7 @@
+{
+    i = 0
+    while ( i< $3 ){
+        printf("single record is getting printed for %f times\n", $3)
+        i = i + 1
+    }
+}
