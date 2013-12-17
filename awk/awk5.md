@@ -18,6 +18,7 @@ Useful one-liners
 * Print every line with the first field replaces by line number. `{$1 = NR; print}`
 * Print every line after erasing the second fields. `{$2 = ""; print}`
 * Print the reverse order of fields in every line.
+
 ```
 {
     for( i = NF; i > 0; i = i - 1) 
@@ -26,7 +27,9 @@ Useful one-liners
 }
 
 ```
+
 * Print the sum of the fields of every line
+
 ```
 {
     sum = 0
@@ -37,6 +40,7 @@ Useful one-liners
 ```
 
 * Add up all fields in all lines and print the sum
+
 ```
 {
     
@@ -46,7 +50,9 @@ Useful one-liners
         
 }
 ```
+
 * Print every line after replacing each field by its absolute value
+
 ```
 {
     for(i=1; i<=NF ; i = i + 1) if($i < 0 ) $i = -$i
