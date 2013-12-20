@@ -1,6 +1,8 @@
 Fundamentals of AWK
 ===================
 
+Based on the book: http://books.cat-v.org/computer-science/awk-programming-language/The_AWK_Programming_Language.pdf
+
 **Pattern-Action Statement**
 
 data1 contains employee name, salary per hour, number of hours worked
