@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  templates2.cpp
- *
- *    Description:  Introducton to templates 2
- *
- *        Version:  1.0
- *        Created:  12/20/2013 21:40:35
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Ankit Goyal
- *   Organization:  UT Austin
- *
- * =====================================================================================
- */
-
 #include<iostream>
 
 template<typename T>

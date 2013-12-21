@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  templates1.cpp
- *
- *    Description:  Introduction to templates
- *
- *        Version:  1.0
- *        Created:  12/20/2013 21:28:37
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Ankit Goyal
- *   Organization:  UT Austin
- *
- * =====================================================================================
- */
-
 #include<iostream>
 
 void printTwice(int data){
