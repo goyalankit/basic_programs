@@ -1,3 +1,7 @@
+My Notes:
+
+https://gist.github.com/goyalankit/8073894
+
 Here are some links to Compiler BKMs (Best Known Methods):
 http://software.intel.com/en-us/articles/programming-and-compiling-for-intel-many-integrated-core-architecture
  
