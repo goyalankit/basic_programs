@@ -39,7 +39,7 @@ struct String{
             }
         }
 
-        String( String &temp){
+        String(const String &temp){
             cout << "hell";
         }
 
@@ -68,19 +68,8 @@ void doit(String q){
 
 int main(void){
     String s("Hello world"); //new object is created.
-    cout << "s=" << s << endl;
-    String t = s; //deep copy was performed. By default a copy was performed.
-    cout << "t=" << t << endl;
-    cout << "address of t " << &t << endl;
-    cout << "address of s " << &s << endl;
-    t = "cool"; //type conversion happening here. Old object is destroyed and a new one is assigned.
-    cout << "changing t.." << endl;
-//    doit(s);
-    cout << "s=" << s << endl; 
-    cout << "t=" << t << endl;
-    cout << "s=" << s << endl; 
-    cout << "address of t " << &t << endl;
-    cout << "address of s " << &s << endl;
+    String t = "jlnln";
 
+    cout << t << endl;
     return 0;
 }
