@@ -35,7 +35,7 @@ def make_a_request(values):
 
 
 def generate_values(params):
-    values = { 'token' : app.config['PKEY'], 'user' : app.config['PUID'] }
+    values = { 'token' : os.environ['PAPIKEY'], 'user' : os.environ['USERID'] }
     if params['message'] is None : return
     values['message']  = params.get( 'message' )
     values['title']    = params.get( 'title' ) if params.get( 'title' ) is not None else 'web hook message'
@@ -43,10 +43,12 @@ def generate_values(params):
     values['sound'] = 'gamelan'
     return values
 
-
+@app.errorhandler(404)
+def page_not_found(e):
+    """Return a custom 404 error."""
+    return 'Sorry, Nothing at this URL.', 404
 
 if __name__ == "__main__":
     app.debug = True
-    app.config['PUID'] = os.environ.get('PUSHOVER_USER_ID')
-    app.config['PKEY'] = os.environ.get('PUSHOVER_API_KEY')
     app.run()
+
