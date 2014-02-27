@@ -1,4 +1,4 @@
-## Coding guide with snippets from here and there.
+#### Coding guide with snippets from here and there.
 
 1. Whenever checkin for nil, ask yourself can you prevent it? 
 
@@ -7,7 +7,7 @@ Some common ways to prevent it.
 ```Ruby
 class DataSource
     def self.get(id)
-        return nil;
+        return "ankit" if id == "ankit"
     end    
 end
 
