@@ -17,10 +17,10 @@ if(!record.nil?)
     print record
 end
 
-#better way
-DataSource.get("ankit") do |myrecord|
-    puts myrecord
-end
+#better way. Apparently this doesn't work. TODO: read on blocks, procs and lambdas
+#DataSource.get("ankit") do |myrecord|
+#    puts myrecord
+#end
 
 ```
 
