@@ -1,9 +1,12 @@
 #### Coding guide with snippets from here and there.
 
-1. Whenever checkin for nil, ask yourself can you prevent it? 
+---
+
+##### Whenever checkin for nil, ask yourself can you prevent it?
 
 Some common ways to prevent it.
 
+###### Case 1:
 ```Ruby
 class DataSource
     def self.get(id)
@@ -17,12 +20,14 @@ if(!record.nil?)
     print record
 end
 
-#better way
+#better way.
 DataSource.get("ankit") do |myrecord|
     puts myrecord
 end
 
 ```
+
+---
 
 #### use `fetch` by default.
 
