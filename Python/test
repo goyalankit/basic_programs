@@ -1,0 +1,4 @@
+def cool():
+  print("hello world")
+
+cool()
