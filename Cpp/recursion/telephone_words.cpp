@@ -1,6 +1,12 @@
 #include <iostream>
 #include <stdio.h>
 
+/**
+ * return all possible words for a given telephone
+ * number
+ *
+ * */
+
 using namespace std;
 
 #define NUMBER_LENGTH 3

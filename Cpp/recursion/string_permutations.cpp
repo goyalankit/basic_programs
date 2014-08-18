@@ -1,6 +1,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+/**
+ *
+ * Generate all possible permutations of same length
+ * */
+
 using namespace std;
 
 void permute(string& in, string& out, vector<bool>& used) {
