@@ -1,36 +1,52 @@
-#include <iostream>
-#include <limits>
-#include <queue>
+/**
+ * count number of nodes in the binary search tree in the specified
+ * range.
 
-/*        15
- *    11       18
- *  10  12   16   19
- * 9     14
- *
- * Range: 14 - 16
- * child has number of children in subtree.
+
+                    6
+              4        7
+         3                 12
+     2                   11    16
+ 0                    10            22
+                                          32
+                                              62
+
  *
  *
  * */
-
+#include <iostream>
+#include <limits>
+#include <queue>
 
 typedef struct Node {
   Node(int _d, Node *_left, Node *_right) :
     data(_d), left(_left), right(_right) {}
 
+  int incrementLeft() {
+    return leftCount++;
+  }
+
+  int incrementRight() {
+    return rightCount++;
+  }
+
   int data;
   Node *left;
   Node *right;
+  int leftCount;
+  int rightCount;
 };
 
 Node* insertNode(Node *root, int data) {
   if (root->data <= data) {
+    root -> incrementRight();
     if (root->right == NULL) {
       root->right = new Node(data, NULL, NULL);
     } else {
       insertNode(root->right, data);
     }
   } else {
+    root -> incrementLeft();
     if (root->left == NULL) {
       root->left = new Node(data, NULL, NULL);
     } else {
@@ -40,10 +56,6 @@ Node* insertNode(Node *root, int data) {
   return root;
 }
 
-
-// print level with newline at each level
-// we track the number of nodes at each level
-// by using a counter
 void printBstByLevel(Node *root) {
   if (root == NULL) return;
 
@@ -57,7 +69,7 @@ void printBstByLevel(Node *root) {
     temp = Queue.front();
     currentLevel -= 1;
     Queue.pop();
-    std::cout << temp->data <<" ";
+    std::cout << temp->data <<" (" << temp->leftCount << ", " << temp->rightCount << ")  ";
     if (temp -> left != NULL) {
       Queue.push(temp->left);
       nextLevel += 1;
@@ -74,27 +86,6 @@ void printBstByLevel(Node *root) {
   }
 }
 
-// level order traversal
-void printBinaryTreeByLevel(Node *root) {
-  if (root == NULL) return;
-
-  std::queue<Node *> Queue;
-  Queue.push(root);
-
-  Node *temp;
-  while(!Queue.empty()) {
-    temp = Queue.front();
-    Queue.pop();
-    std::cout << temp->data <<" ";
-    if (temp -> left != NULL) {
-      Queue.push(temp->left);
-    }
-    if (temp -> right != NULL) {
-      Queue.push(temp -> right);
-    }
-  }
-}
-
 Node * create_binary_tree(){
   Node *root = new Node(6, NULL, NULL);
   root = insertNode(root, 7);
@@ -107,6 +98,8 @@ Node * create_binary_tree(){
   root = insertNode(root, 32);
   root = insertNode(root, 62);
   root = insertNode(root, 0);
+  root = insertNode(root, 11);
+  root = insertNode(root, 10);
 
   if (root->left == NULL || root->right == NULL) {
     std::cout << "Dammit" << std::endl;
@@ -114,25 +107,32 @@ Node * create_binary_tree(){
   return root;
 }
 
-// check if tree is a binary search tree
-// use range to determine
-bool isBst(Node *root, int min, int max) {
-  if (root == NULL || (root->data < max &&
-      root -> data > min &&
-      isBst(root->left, min, root->data) &&
-      isBst(root->right, root->data, max)))
-    return true;
-   else
-    return false;
+int countInRange(Node *root, int min, int max, int &count) {
+  if (root == NULL) return 0;
+
+  if (root->data <=  min && root->right != NULL) {
+    countInRange(root->right, min, max, count);
+  } else if (root -> data >= max && root->left != NULL) {
+    countInRange(root->left, min, max, count);
+  } else if (root->data > min && root -> data < max) {
+    std::cout << "[A] " << root->data << std::endl;
+    count++;
+    countInRange(root->left, min, max, count); // only increment it once.
+    countInRange(root->right, min, max, count);
+  }
+
+  return count;
 }
 
 int main(void) {
   int max = std::numeric_limits<int>::max();
   int min = std::numeric_limits<int>::min();
+  int count = 0;
 
   Node *root = create_binary_tree();
-  // printBinaryTreeByLevel(root);
+  std::cout << "---------------------" << std::endl;
+  std::cout << countInRange(root, 1, 11, count) << std::endl;
+  std::cout << "---------------------" << std::endl;
   printBstByLevel(root);
-  std::cout << std::boolalpha << isBst(root, min, max) << std::endl;
   return EXIT_SUCCESS;
 }
