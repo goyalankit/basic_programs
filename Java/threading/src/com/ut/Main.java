@@ -1,11 +1,29 @@
 package com.ut;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+
 public class Main {
+
+
     public static void main(String[] args) {
-        Buffer buffer = new Buffer();
-        Producer producer = new Producer(buffer);
-        Consumer consumer = new Consumer(buffer);
-        producer.start();
-        consumer.start();
+
+        String str = ",a,,b,";
+
+
+
+        Iterables.transform(Splitter.on(',')
+                .split(str));
+
+
+
+        System.out.println("--start--");
+        for(String s: result){
+            System.out.println(s);
+        }
+        System.out.println("--end--");
+
     }
 }
