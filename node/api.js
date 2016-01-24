@@ -1,3 +1,4 @@
+/* jshint  esnext: true */
 var http = require("http");
 var data = require("./data/inventory");
 
@@ -22,7 +23,7 @@ console.log("Server listening on port 3000");
 
 function listInStock(res) {
   var inStock = data.filter(function(item){
-    return item["avail"] === "In stock";
+    return item.avail === "In stock";
   });
 
   res.end(JSON.stringify(inStock));
@@ -30,7 +31,7 @@ function listInStock(res) {
 
 function listOnBackOrder(res) {
   var onOrder = data.filter(function(item){
-    return item["avail"] === "On back order";
+    return item.avail === "On back order";
   });
 
   res.end(JSON.stringify(onOrder));
