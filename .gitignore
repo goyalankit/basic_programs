@@ -42,3 +42,7 @@ Cpp/road*
 *.swp
 
 node_modules/*
+
+# venv
+venv
+virtualenv-15.0.1
